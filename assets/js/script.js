@@ -7,8 +7,29 @@ var createTask = function(taskText, taskDate, taskList) {
     .addClass("badge badge-primary badge-pill")
     .text(taskDate);
   var taskP = $("<p>")
-    .addClass("m-1")
-    .text(taskText);
+  $(".list-group").on("blur", "text-area", function(){
+    // get the textarea's current value/text
+    var text = $(this)
+    .val()
+    .trim();
+
+    //get the parent ul's id attribute
+    var status = $(this)
+    .closest(".list-group")
+    .attr("id")
+    .replace("list-", "");
+
+    // get the task's position in the list of other li elements
+    var index = $(this)
+    .closest(".list-group-item")
+    .index();
+
+    tasks[status][index].text = text;
+    saveTasks();
+
+  });
+    addClass("m-1")
+    text(taskText);
 
   // append span and p element to parent li
   taskLi.append(taskSpan, taskP);
@@ -16,6 +37,15 @@ var createTask = function(taskText, taskDate, taskList) {
 
   // append to ul list on the page
   $("#list-" + taskList).append(taskLi);
+
+  // recreate p element
+  var taskP = $("<p>")
+  .addClass("m-1")
+  .text(text);
+
+  // replace textarea with p element
+  $(this).replaceWith(taskP);
+
 };
 
 var loadTasks = function() {
@@ -45,7 +75,37 @@ var saveTasks = function() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 };
 
+$(".list-group").on("click", "p", function() {
+  var text = $(this)
+  .text()
+  var textInput = $("<textarea>")
+    .addClass("form-control")
+    .val(text);
+    $(this).replaceWith(textInput);
+    textInput.trigger("focus");
+  trim();
+});
 
+// due date was clicked
+$(".list-group").on("click", "span", function() {
+  //get current text 
+  var date = $(this)
+  .text()
+  .trim();
+
+  //create new input element 
+  var dateInput = $("<input>")
+  .attr("type", "text")
+  .addClass("form-control")
+  .val(date);
+
+  //swap out elements
+  $(this).replaceWith(dateInput);
+
+  // automatically focus on new element
+  dateInput.trigger("focus");
+
+});
 
 
 // modal was triggered
